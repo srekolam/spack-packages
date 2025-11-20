@@ -1,0 +1,27 @@
+diff --git a/projects/rocprofiler-register/cmake/rocprofiler_register_config_packaging.cmake b/projects/rocprofiler-register/cmake/rocprofiler_register_config_packaging.cmake
+index bb7a96c1d3..581df3cd54 100644
+--- a/projects/rocprofiler-register/cmake/rocprofiler_register_config_packaging.cmake
++++ b/projects/rocprofiler-register/cmake/rocprofiler_register_config_packaging.cmake
+@@ -75,6 +75,8 @@ else()
+     set(CPACK_RPM_PACKAGE_REQUIRES "")
+ endif()
+ 
++include(CPack)
++
+ foreach(COMPONENT_GROUP ${ROCPROFILER_REGISTER_COMPONENT_GROUPS})
+     set(_SEP "${COMPONENT_SEP_${COMPONENT_GROUP}}")
+     set(_DEP "${COMPONENT_DEP_${COMPONENT_GROUP}}")
+diff --git a/projects/rocprofiler-register/source/lib/rocprofiler-register/CMakeLists.txt b/projects/rocprofiler-register/source/lib/rocprofiler-register/CMakeLists.txt
+index e15fa88220..a16a782af2 100644
+--- a/projects/rocprofiler-register/source/lib/rocprofiler-register/CMakeLists.txt
++++ b/projects/rocprofiler-register/source/lib/rocprofiler-register/CMakeLists.txt
+@@ -16,7 +16,8 @@ endif()
+ target_include_directories(
+     rocprofiler-register PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/source
+                                  ${PROJECT_BINARY_DIR}/source)
+-
++find_package(fmt CONFIG REQUIRED)
++find_package(glog CONFIG REQUIRED)
+ target_link_libraries(
+     rocprofiler-register
+     PUBLIC rocprofiler-register::headers

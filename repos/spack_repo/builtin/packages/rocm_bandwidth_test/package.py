@@ -18,6 +18,13 @@ class RocmBandwidthTest(CMakePackage):
 
     maintainers("srekolam", "renjithravindrankannath", "afzpatel")
     version(
+        "7.1.0",
+        git="https://github.com/ROCm/rocm_bandwidth_test",
+        tag="rocm-7.1.0",
+        commit="9f0a001fa5cfcbe6ecdf2e96fd91eacb371a8a1e",
+        submodules=True,
+    )
+    version(
         "7.0.2",
         git="https://github.com/ROCm/rocm_bandwidth_test",
         tag="rocm-7.0.2",
@@ -92,11 +99,12 @@ class RocmBandwidthTest(CMakePackage):
         "6.4.3",
         "7.0.0",
         "7.0.2",
+        "7.1.0",
     ]:
         depends_on(f"hsa-rocr-dev@{ver}", when=f"@{ver}")
         depends_on(f"rocm-core@{ver}", when=f"@{ver}")
 
-    for ver in ["7.0.0", "7.0.2"]:
+    for ver in ["7.0.0", "7.0.2", "7.1.0"]:
         depends_on(f"llvm-amdgpu@{ver}", when=f"@{ver}")
         depends_on(f"hip@{ver}", when=f"@{ver}")
 
@@ -106,7 +114,7 @@ class RocmBandwidthTest(CMakePackage):
     # https://github.com/ROCm/rocm_bandwidth_test/issues/131
     # install doesnt honour CMAKE_INSTALL_PREFIX
     patch("change_install_path.patch", when="@7.0.0")
-    patch("change_install_path_7.0.2.patch", when="@7.0.2")
+    patch("change_install_path_7.0.2.patch", when="@7.0.2:")
 
     @property
     def build_targets(self):
