@@ -68,8 +68,6 @@ class Rocblas(CMakePackage):
 
     depends_on("googletest@1.10.0:", type="test")
     depends_on("amdblis", type="test")
-    depends_on("netlib-lapack@3.7.1:", type="test", when="@7.1:")
-    depends_on("boost", type="test", when="@7.1:")
 
     for ver in [
         "6.2.0",
@@ -183,6 +181,7 @@ class Rocblas(CMakePackage):
     patch("0007-add-rocm-openmp-extras-include-dir.patch", when="@5.7")
     patch("0008-link-roctracer.patch", when="@6.4")
     patch("0009-use-rocm-smi-config.patch", when="@6.4")
+    patch("0001-remove-blas-override.patch", when="@7.1")
 
     def setup_build_environment(self, env: EnvironmentModifications) -> None:
         env.set("CXX", self.spec["hip"].hipcc)
@@ -226,13 +225,6 @@ class Rocblas(CMakePackage):
             args.append(
                 self.define("BLAS_LIBRARY", self.spec["amdblis"].prefix + "/lib/libblis.a")
             )
-            if self.spec.satisfies("@7.1:"):
-                args.append(
-                    self.define("PKGBLAS_INCLUDE_DIRS", self.spec["netlib-lapack"].prefix.include)
-                )
-                args.append(
-                    self.define("PKGBLAS_LIBRARIES", self.spec["netlib-lapack"].prefix.lib64)
-                )
 
         if "+tensile" in self.spec:
             tensile_path = join_path(self.stage.source_path, "Tensile")
@@ -273,8 +265,6 @@ class Rocblas(CMakePackage):
             args.append(
                 "-DROCTX_PATH={0}".format(self.spec["roctracer-dev"].prefix)
             )
-            args.append(self.define("Boost_INCLUDE_DIR", self.spec["boost"].prefix.include))
-            
         return args
 
     @run_after("build")
